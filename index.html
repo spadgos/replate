@@ -30,6 +30,15 @@
       }
     }
   });
+  r.clone().render({
+    foo: 'f2',
+    bar: 'b2',
+    baz: {
+      quux: {
+        flub: 'f2'
+      }
+    }
+  }, document.body);
 }());
 
 </script>

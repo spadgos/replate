@@ -129,20 +129,35 @@
   };
   Replate.pattern = /\$\{(.*?)\}/g;
 
-  Replate.prototype.render = function(data, target) {
-    if (this.result == null) {
-      this.generate(data);
-    }
+  /**
+   * Render this replate.
+   * @param  {*}            data       data to be substituted into the Replate
+   * @param  {opt_target=}  opt_target Optional element to append the result into.
+   * @return {Array.<Node>} An array of nodes (elements, text nodes)
+   */
+  Replate.prototype.render = function(data, opt_target) {
+    this.generate(data); // <-- idempotent
     this.reuse(data);
 
-    if (target) {
+    if (opt_target) {
       var frag = document.createDocumentFragment();
       each(this.result.childNodes, function (i, el) {
         frag.appendChild(el);
       });
-      target.appendChild(frag);
+      opt_target.appendChild(frag);
     }
     return this.result.childNodes;
+  };
+
+  /**
+   * Clone this Replate.
+   * @return {Replate}
+   */
+  Replate.prototype.clone = function() {
+    var r = new Replate(this.source);
+    r.replacements = this.replacements;
+    r.pattern = this.pattern;
+    return r;
   };
 
   Replate.prototype.parseText = function(text) {
@@ -158,14 +173,23 @@
     out.push(text.substr(lastPos));
     return out;
   };
-
   Replate.prototype.generate = function() {
+    if (!this.result) {
+      this.buildDOMTree();
+    }
+    if (!this.replacements) {
+      this.buildReplacementTree();
+    }
+  };
+  Replate.prototype.buildDOMTree = function() {
     var base = document.createElement('div');
     base.innerHTML = this.source;
 
     this.result = {childNodes : [].slice.apply(base.childNodes)};
-    this.replacements = {};
+  };
 
+  Replate.prototype.buildReplacementTree = function() {
+    this.replacements = {};
     each(this.result.childNodes, buildReplacements.bind(this, this.replacements));
   };
 

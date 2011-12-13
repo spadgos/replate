@@ -1,5 +1,5 @@
 /*jslint eqnull: true */
-(function (global) {
+(function (global, undef) {
   var NodeType = {
     ELEMENT_NODE               : 1,
     ATTRIBUTE_NODE             : 2,
@@ -108,7 +108,7 @@
 
   select = function(obj, path) {
     var parts = path.split('.'),
-        i, l, undef;
+        i, l;
     for (i = 0, l = parts.length; i < l; ++i) {
       if (obj != null) {
         obj = obj[parts[i]];
@@ -128,7 +128,7 @@
   Replate.create = function(source) {
     return new Replate(source);
   };
-  Replate.pattern = /\$\{(.*?)\}/g;
+  Replate.pattern = /\$\{([^:}]+?)(?::([^}]+))?\}/g;
 
   /**
    * Render this replate.
@@ -167,7 +167,7 @@
     while ((matches = re.exec(text))) {
       out.push(
         text.substring(lastPos, matches.index),
-        new Sub(matches[1])
+        new Sub(matches.slice(1))
       );
       lastPos = re.lastIndex;
     }
@@ -198,9 +198,10 @@
     updateNode.call(this, this.result, this.replacements, data);
   };
 
-  Sub = function (contents) {
-    // todo: allow for modifiers (eg: raw text, capitalize, etc)
-    this.varName = contents;
+  Sub = function (match) {
+    this.varName = match[0];
+    this.filter = match[1];
+    this.filterArgs = match.slice(2);
   };
   Sub.stitch = function(textParts, data) {
     var i, l, sub, out = [];
@@ -218,7 +219,28 @@
     return "((" + this.varName + "))";
   };
   Sub.prototype.render = function(data) {
-    return select(data, this.varName);
+    var val = select(data, this.varName);
+    if (val == null) {
+      return '';
+    } else if (this.filter && this.filters[this.filter]) {
+      return this.filters[this.filter].apply(this, [val].concat(this.filterArgs));
+    } else {
+      return val;
+    }
+  };
+  Sub.prototype.filters = {
+    lower: function (val) {
+      return String(val).toLowerCase();
+    },
+    upper: function (val) {
+      return String(val).toUpperCase();
+    },
+    title: function (val) {
+      val = String(val).toLowerCase();
+      return val.replace(/(^|\s)(\w)/g, function (_, space, letter) {
+        return space + letter.toUpperCase();
+      });
+    }
   };
 
   if (typeof module === 'object' && module.exports) {

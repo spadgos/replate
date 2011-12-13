@@ -95,7 +95,11 @@
     this.test("Lower case", function (assert) {
       assert.that(renderBasic('lower', 'FOo bAr')).is.html('foo bar')();
     });
-    this.test("Raw", function (asserT) {
+    this.test("Title case", function (assert) {
+      assert.that(renderBasic('title', 'FOo bAr')).is.html('Foo Bar')();
+    });
+    this.test("Raw", function (assert) {
+      this.skipIf(true, "raw filter not yet implemented");
       assert.that(renderBasic('raw', '<em>blah</em>')).is.html("<em>blah</em>")();
     });
   });

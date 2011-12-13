@@ -13,7 +13,7 @@
       '${foo}<strong class="${bar} ${foo}">${foo}</strong>${bar}',
     '</div>',
     '<!-- what about this -->',
-    'his name was ${bar} you &amp; know?'
+    'his name was ${bar} you &amp; know? ${baz.quux.flub}'
   ].join('\n');
   var r = new Replate(testInput);
   r.render({
@@ -23,7 +23,12 @@
 
   r.render({
     foo: 'fu',
-    bar: 'bah'
+    bar: 'bah',
+    baz: {
+      quux: {
+        flub: "yep"
+      }
+    }
   });
 }());
 

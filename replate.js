@@ -33,6 +33,7 @@
       Replate,
       each,
       updateNode,
+      select,
       isEmpty;
 
   buildReplacements = function(replacements, index, el) {
@@ -102,6 +103,19 @@
       }
     }
     return true;
+  };
+
+  select = function(obj, path) {
+    var parts = path.split('.'),
+        i, l, undef;
+    for (i = 0, l = parts.length; i < l; ++i) {
+      if (obj != null) {
+        obj = obj[parts[i]];
+      } else {
+        return undef;
+      }
+    }
+    return obj;
   };
 
   Replate = function(source) {
@@ -179,8 +193,7 @@
     return "((" + this.varName + "))";
   };
   Sub.prototype.render = function(data) {
-    // todo: handle foo.bar.baz
-    return data[this.varName];
+    return select(data, this.varName);
   };
 
   if (typeof module === 'object' && module.exports) {

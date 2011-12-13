@@ -1,0 +1,32 @@
+<html>
+<head>
+  <title>Replate</title>
+</head>
+<body>
+
+<script type="text/javascript" src="replate.js"></script>
+<script type="text/javascript">
+(function () {
+  var testInput = [
+    'blah',
+    '<div>',
+      '${foo}<strong class="${bar} ${foo}">${foo}</strong>${bar}',
+    '</div>',
+    '<!-- what about this -->',
+    'his name was ${bar} you &amp; know?'
+  ].join('\n');
+  var r = new Replate(testInput);
+  r.render({
+    foo: "FOO",
+    bar: "BAR"
+  }, document.body);
+
+  r.render({
+    foo: 'fu',
+    bar: 'bah'
+  });
+}());
+
+</script>
+</body>
+</html>

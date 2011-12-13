@@ -1,3 +1,4 @@
+/*jslint eqnull: true */
 (function (global) {
   var NodeType = {
     ELEMENT_NODE               : 1,
@@ -131,9 +132,9 @@
 
   /**
    * Render this replate.
-   * @param  {*}            data       data to be substituted into the Replate
-   * @param  {opt_target=}  opt_target Optional element to append the result into.
-   * @return {Array.<Node>} An array of nodes (elements, text nodes)
+   * @param  {*}            data        Data to be substituted into the Replate
+   * @param  {opt_target=}  opt_target  Optional element to append the result into.
+   * @return {Array.<Node>}             An array of nodes (elements, text nodes)
    */
   Replate.prototype.render = function(data, opt_target) {
     this.generate(data); // <-- idempotent

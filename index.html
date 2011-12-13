@@ -8,37 +8,85 @@
 <script type="text/javascript">
 (function () {
   var testInput = [
-    'blah',
-    '<div>',
-      '${foo}<strong class="${bar} ${foo}">${foo}</strong>${bar}',
-    '</div>',
-    '<!-- what about this -->',
-    'his name was ${bar} you &amp; know? ${baz.quux.flub}'
+    '<li data-sc-track-id="${track.id}" class="streamable-${track.streamable}">',
+    '  <div class="inner">',
+    '    <div class="tmb">',
+    '      <span>',
+    '        <img src="${track.artwork_url}">',
+    '      </span>',
+    '    </div>',
+    '    <a href="/${track.user.permalink}/${track.permalink}">',
+    '      <h3 class="uploader">${track.user.username}</h3>',
+    '      <p class="title"><span class="favorite-icon"></span>${track.title}</p>',
+    '      <div class="details">',
+    '        <span class="sharing-label secondary ${track.shared_label_class}">${track.sharing_label}</span>',
+    '        <ul class="stats mini">',
+    '          <li class="user liked-by"><span>${track.liked_by.username}</span> liked it</li>',
+    '          <li class="favorites favorites-${track.favoritings_count}">${track.favoritings_count}</li>',
+    '          <li class="comments comments-${track.comment_count}">${track.comment_count}</li>',
+    '          <li class="plays plays-${track.playback_count}">${track.playback_count}</li>',
+    '        </ul>',
+    '      </div>',
+    '      <span class="uploaded">${shared}</span>',
+    '    </a>',
+    '  </div>',
+    '</li>'
   ].join('\n');
-  var r = new Replate(testInput);
-  r.render({
-    foo: "FOO",
-    bar: "BAR"
-  }, document.body);
 
-  r.render({
-    foo: 'fu',
-    bar: 'bah',
-    baz: {
-      quux: {
-        flub: "yep"
-      }
-    }
-  });
-  r.clone().render({
-    foo: 'f2',
-    bar: 'b2',
-    baz: {
-      quux: {
-        flub: 'f2'
-      }
-    }
-  }, document.body);
+  var r = new Replate(testInput), data;
+  data = {
+    track: {
+      "id": 10302762,
+      "created_at": "2011/02/09 13:29:35 +0000",
+      "user_id": 2344186,
+      "duration": 188491,
+      "commentable": true,
+      "state": "finished",
+      "sharing": "public",
+      "tag_list": "",
+      "permalink": "twf-grime-beatz-base-cut",
+      "description": "",
+      "streamable": true,
+      "downloadable": false,
+      "genre": "",
+      "release": "",
+      "purchase_url": null,
+      "label_id": null,
+      "label_name": "",
+      "isrc": "",
+      "video_url": null,
+      "track_type": "original",
+      "key_signature": "",
+      "bpm": null,
+      "playback_count": 0,
+      "download_count": 0,
+      "comment_count": 0,
+      "favoritings_count": 0,
+      "title": "TWF - Grime Beatz - Base Cut",
+      "release_year": null,
+      "release_month": null,
+      "release_day": null,
+      "original_format": "mp3",
+      "license": "all-rights-reserved",
+      "uri": "http://api.soundcloud.com/tracks/10302762",
+      "permalink_url": "http://soundcloud.com/twfmusic/twf-grime-beatz-base-cut",
+      "artwork_url": "http://i1.soundcloud.com/artworks-000004722694-dp79d2-large.jpg?8b8424",
+      "waveform_url": "http://waveforms.soundcloud.com/MavsiCkdpsCL_m.png",
+      "user": {
+        "id": 2344186,
+        "permalink": "twfmusic",
+        "username": "TWFmusic",
+        "uri": "http://api.soundcloud.com/users/2344186",
+        "permalink_url": "http://soundcloud.com/twfmusic",
+        "avatar_url": "http://i1.soundcloud.com/avatars-000002187491-bo5cmx-large.jpg?8b8424"
+      },
+      "stream_url": "http://api.soundcloud.com/tracks/10302762/stream",
+      "attachments_uri": "http://api.soundcloud.com/tracks/10302762/attachments"
+    },
+    "shared": "yesterday"
+  };
+
+  r.render(data, document.body);
 }());
 
 </script>

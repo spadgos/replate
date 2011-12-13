@@ -65,6 +65,7 @@
       assert.that(result).is.html('<div class="FOO">FOO</div>')();
     });
   });
+
   testSuite.module("Result reuse", function () {
     this.test("A result is reused", function (assert) {
       var result, rerenderResult, replate;
@@ -75,5 +76,29 @@
       assert.that(result[0]).is(rerenderResult[0])("The exact same DOM element should be returned");
     });
   });
+
+  testSuite.module("Filters", function () {
+    var renderBasic = function(filterName, val) {
+      return Replate.create('${foo' + (filterName ? ":" + filterName : "") + '}').render({foo : val});
+    };
+
+    this.test("Default: HTML escaping", function (assert) {
+      assert.that(renderBasic('', '<foo> & \' "')).is.html('&lt;foo&gt; &amp; \' "')();
+    });
+    this.test("Default: HTML escaping inside attributes", function (assert) {
+      var result = Replate.create('<div class="${foo}"></div>').render({foo: '<bar> & \' "'});
+      assert.that(result).is.html('<div class="&lt;bar&gt; &amp; \' &quot;"></div>')();
+    });
+    this.test("Upper case", function (assert) {
+      assert.that(renderBasic('upper', 'foo bAr')).is.html('FOO BAR')();
+    });
+    this.test("Lower case", function (assert) {
+      assert.that(renderBasic('lower', 'FOo bAr')).is.html('foo bar')();
+    });
+    this.test("Raw", function (asserT) {
+      assert.that(renderBasic('raw', '<em>blah</em>')).is.html("<em>blah</em>")();
+    });
+  });
+
   testSuite.run();
 }());
